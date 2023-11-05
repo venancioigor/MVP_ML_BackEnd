@@ -1,0 +1,63 @@
+Faz a predição para saber se a poção mágica vai curar a princesa
+---
+tags:
+  - Prediction
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+              Pena_de_Fenix:
+                type: number
+                format: float
+              Chifre_de_Unicornio:
+                type: number
+                format: float
+              Sangue_de_Dragao:
+                type: number
+                format: float
+              Lagrimas_de_Sereia:
+                type: number
+                format: float
+              Po_de_Fada:
+                type: number
+                format: float
+              Dedos_de_Duende:
+                type: number
+                format: float
+              Pocao_da_Bruxa:
+                type: number
+                format: float
+              Garra_de_Grifo:
+                type: number
+                format: float
+              Cabelo_de_Troll:
+                type: number
+                format: float
+              Tinta_de_Kraken:
+                type: number
+                format: float
+              Chifre_de_Minotauro:
+                type: number
+                format: float
+              Escama_de_Basilisco:
+                type: number
+                format: float
+              Presa_de_Quimera:
+                type: number
+                format: float
+    required: true
+    description: Envia os ingredientes da poção para obter a previsão de cura da princesa
+
+responses:
+  200:
+    description: Predição realizada com sucesso
+    schema:
+      type: object
+      properties:
+              prediction:
+                type: integer
+                description: A predição de cura (1 para curada, 0 para não curada)
+  400:
+    description: Os dados de entrada são inválidos
