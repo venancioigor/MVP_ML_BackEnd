@@ -42,7 +42,6 @@ def verificar_resultado_solucao():
         # Predição utilizando o modelo
         prediction = model.predict([predict_request])
 
-        # Mapeia a predição para uma resposta significativa
         result = "cura" if prediction[0] == 1 else "morte"
 
         # Retorne a predição como resposta JSON
