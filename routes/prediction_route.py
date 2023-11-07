@@ -2,12 +2,19 @@ from flask import Blueprint, jsonify, request
 from flasgger import swag_from
 import traceback
 import pickle
+import pandas as pd
+import numpy as  np
+from sklearn.preprocessing import StandardScaler
 
 prediction = Blueprint("prediction", __name__, url_prefix="/api/machineLearning")
 
 # Carregando o modelo
 with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
+
+with open('scaler.pkl', 'rb') as scaler_file:
+    scaler = pickle.load(scaler_file)
+
 
 
 @prediction.route('/fazPredicao', methods=['POST'])
@@ -30,17 +37,37 @@ def verificar_resultado_solucao():
         sangue_de_dragao = data['Sangue_de_Dragao']
         tinta_de_kraken = data['Tinta_de_Kraken']
 
-        predict_request  =   [
-                            cabelo_de_troll, chifre_de_minotauro, chifre_de_unicornio,dedos_de_duende, 
-                            escama_de_basilisco, garra_de_grifo, lagrimas_de_sereia, pena_de_fenix,
-                            po_de_fada, pocao_da_bruxa, presa_de_quimera, sangue_de_dragao, tinta_de_kraken
-                            ]
+        dados = {
+                'Pena de Fenix': pena_de_fenix,
+                'Chifre de Unicornio': chifre_de_unicornio,
+                'Sangue de Dragão': sangue_de_dragao,
+                'Lágrimas de Sereia': lagrimas_de_sereia,
+                'Pó de Fada': po_de_fada,
+                'Dedos de Duende': dedos_de_duende,
+                'Poção da Bruxa': pocao_da_bruxa,
+                'Garra de Grifo': garra_de_grifo,
+                'Cabelo de Troll': cabelo_de_troll,
+                'Tinta de Kraken': tinta_de_kraken,
+                'Chifre de Minotauro': chifre_de_minotauro,
+                'Escama de Basilisco': escama_de_basilisco,
+                'Presa de Quimera': presa_de_quimera
+                    }
         
-        # Asseguro que todos os dados sejam convertidos para float
-        predict_request = [float(i) for i in predict_request]
+        atributos = [
+              'Pena de Fenix', 'Chifre de Unicornio', 'Sangue de Dragão','Lágrimas de Sereia',
+              'Pó de Fada','Dedos de Duende','Poção da Bruxa', 'Poção da Bruxa', 'Garra de Grifo',
+              'Cabelo de Troll',  'Tinta de Kraken','Chifre de Minotauro','Escama de Basilisco',
+              'Presa de Quimera'
+             ]
+        entrada = pd.DataFrame([dados], columns=atributos)
+        array_entrada = entrada.values
+        X_entrada = array_entrada[:,0:13].astype(float)
 
+        # Padronização nos dados de entrada usando o scaler utilizado em X
+        rescaledEntradaX = scaler.transform(X_entrada)
+        
         # Predição utilizando o modelo
-        prediction = model.predict([predict_request])
+        prediction = model.predict(rescaledEntradaX)
 
         result = "cura" if prediction[0] == 1 else "morte"
 
